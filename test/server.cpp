@@ -42,13 +42,19 @@ DESCRIPTION\n\
 int main(int argc,char* argv[])
 {
 	int fd = udp_init("127.0.0.1", 9000, 9001);
+	if (fd < 0)
+	{
+		perror("udp_init");
+		return 1;
+	}
 	
-	int n = 0;
+	int cnt = 0;
 	char buffer[65536];
 	while(1)
 	{
-		sprintf(buffer, msg, n++);
-		udp_send(fd, buffer, strlen(buffer));
+		sprintf(buffer, msg, cnt++);
+		int n = udp_send(fd, buffer, strlen(buffer));
+		printf("send %d bytes\n",n);
 		sleep(1);
 	}
 	udp_close(fd);
